@@ -23,6 +23,11 @@ def check_api_key(x_api_key: str | None):
     if x_api_key != API_KEY:
         raise HTTPException(status_code=401, detail="Unauthorized")
 
+@app.on_event("startup")
+async def startup():
+    if not API_KEY:
+        raise RuntimeError("API_KEY environment variable must be configured")
+
 @app.get("/health")
 def health():
     return {"status": "ok"}
